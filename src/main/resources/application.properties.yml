@@ -1,0 +1,8 @@
+
+spring:
+  data:
+      mongodb:
+        database: admin
+        port: 27017
+        username: admin
+        password: 123@mudar
