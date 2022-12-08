@@ -4,38 +4,48 @@ import br.com.demo.mongocache.model.Tutorial;
 import br.com.demo.mongocache.repository.TutorialRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.print.DocFlavor.STRING;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 
-@CrossOrigin(origins = "http://localhost:8081")
 @RestController
+@Validated
 @RequestMapping("/api")
 public class TutorialController {
 
   @Autowired
   TutorialRepository tutorialRepository;
 
- @GetMapping("/tutorials")
-  public ResponseEntity<List<String>> getAllTutorials(@RequestParam(required = false) String title) {
-    List<String> data = Collections.singletonList(title);
-    return ResponseEntity.ok(data);
+  @GetMapping("/tutorials")
+  public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
+    try {
+      List<Tutorial> tutorials = new ArrayList<Tutorial>();
+  
+      if (title == null)
+        tutorialRepository.findAll().forEach(tutorials::add);
+      else
+        tutorialRepository.findByTitleContaining(title).forEach(tutorials::add);
+  
+      if (tutorials.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      }
+  
+      return new ResponseEntity<>(tutorials, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 /*  
   @GetMapping("/tutorials/{id}")
@@ -44,8 +54,13 @@ public class TutorialController {
   } */
 
   @PostMapping("/tutorials")
-  public ResponseEntity<Tutorial> createTutorial(@RequestBody Tutorial tutorial) {
-    return ResponseEntity.ok(tutorial);
+  public ResponseEntity<Tutorial> createTutorial(@Valid @RequestBody Tutorial tutorial) {
+    try {
+      Tutorial _tutorial = tutorialRepository.save(new Tutorial(tutorial.getTitle(), tutorial.getDescription(), false));
+      return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /* @PutMapping("/tutorials/{id}")

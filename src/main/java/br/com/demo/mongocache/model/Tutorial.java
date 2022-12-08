@@ -1,16 +1,26 @@
 package br.com.demo.mongocache.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "tutorials")
-
 public class Tutorial {
-  
+
   @Id
   private String id;
+  @NotNull
+  @NotBlank
   private String title;
+  @NotNull
+  @NotBlank
   private String description;
+
+  @NotNull
+  @Pattern(regexp = "^true$|^false$", message = "allowed input: true or false")
   private boolean published;
 
   public Tutorial() {
