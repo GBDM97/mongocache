@@ -56,8 +56,13 @@ public class TutorialController {
 
   @PostMapping(value="/tutorials",  consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Tutorial> createTutorial(@RequestBody @Valid Tutorial tutorial) {
-      //Tutorial _tutorial = tutorialRepository.save(new Tutorial(tutorial.getTitle(), tutorial.getDescription(), false));
-      return new ResponseEntity<>(new Tutorial(), HttpStatus.CREATED);
+      Tutorial newTutorial = Tutorial.builder()
+      .title(tutorial.getTitle())
+      .description(tutorial.getDescription())
+      .published(false)
+      .build();
+      Tutorial tutorialSaved = tutorialRepository.save(newTutorial);
+      return new ResponseEntity<>(tutorialSaved, HttpStatus.CREATED);
    
   }
 

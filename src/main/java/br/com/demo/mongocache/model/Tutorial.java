@@ -10,12 +10,15 @@ import javax.validation.constraints.Pattern;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
+@Builder
+@Document(collection = "tutorials")
 public class Tutorial implements Serializable {
 
   @Id
