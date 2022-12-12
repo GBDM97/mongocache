@@ -1,14 +1,21 @@
 package br.com.demo.mongocache.model;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +43,9 @@ public class Tutorial implements Serializable {
 
   @NotNull
   private boolean published;
+
+  @CreatedDate
+  private  Instant createdAt;
 
   // public Tutorial() {
   //   this.description = null;
